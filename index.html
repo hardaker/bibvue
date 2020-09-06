@@ -11,24 +11,24 @@
 		<v-container>
 		    <span v-for="item in sections" :key="item.id">
 			<h3>{{item.title}}</h3>
-			<v-simple-table>
+			<v-simple-table dense>
 			    <template v-slot:default>
 			    <tbody>
 				<tr v-if="item.URL">
 				    <th>URL</th>
-				    <td><a href="{{item.URL}}">{{item.URL}}</a></td>
+				    <td><a :href="item.URL">{{item.URL}}</a></td>
 				</tr>
-				<tr v-if="item.issued.date-parts">
+				<tr v-if="item.issued['date-parts']">
 				    <th>Date</th>
-				    <td>{{item.issued.date-parts.join("/")}}</td>
+				    <td>{{item.issued['date-parts'].join("/")}}</td>
 				</tr>
-				<tr v-if="item.container-title">
+				<tr v-if="item['collection-title']">
 				    <th>Where</th>
-				    <td>{{item.container-title}}</td>
+				    <td>{{item['collection-title']}}</td>
 				</tr>
-				<tr v-if="item.collection-title">
+				<tr v-if="item['container-title']">
 				    <th>Where</th>
-				    <td>{{item.collection-title}}</td>
+				    <td>{{item['container-title']}}</td>
 				</tr>
 				<tr v-if="item.publisher">
 				    <th>Where</th>
@@ -57,6 +57,10 @@
 			    </tbody>
 			    </template>
 			</v-simple-table>
+			<p v-if="item.abstract">
+			    <strong>Abstract: </strong>
+			    {{item.abstract}}
+			</p>
 		    </span>
 		</v-container>
 	    </v-main></v-app>
