@@ -8,18 +8,57 @@
     <body>
 	<div id="bibvue">
 	    <v-app><v-main>
-	    <v-container>
-		<v-row>
-		    <v-col>
-			<v-card>
-			    <p>hi</p>
-			</v-card>
-		    </v-col>
-		    <v-col>
-			<p>world {{foo}}</p>
-		    </v-col>
-		</v-row>
-	    </v-container>
+		<v-container>
+		    <span v-for="item in sections" :key="item.id">
+			<h3>{{item.title}}</h3>
+			<v-simple-table>
+			    <template v-slot:default>
+			    <tbody>
+				<tr v-if="item.URL">
+				    <th>URL</th>
+				    <td><a href="{{item.URL}}">{{item.URL}}</a></td>
+				</tr>
+				<tr v-if="item.issued.date-parts">
+				    <th>Date</th>
+				    <td>{{item.issued.date-parts.join("/")}}</td>
+				</tr>
+				<tr v-if="item.container-title">
+				    <th>Where</th>
+				    <td>{{item.container-title}}</td>
+				</tr>
+				<tr v-if="item.collection-title">
+				    <th>Where</th>
+				    <td>{{item.collection-title}}</td>
+				</tr>
+				<tr v-if="item.publisher">
+				    <th>Where</th>
+				    <td>{{item.publisher}}</td>
+				</tr>
+				<tr v-if="item.author">
+				    <th>Authors</th>
+				    <td>
+					<span v-for="author in item.author">
+					    {{author.given}} {{author.family}},
+					</span>
+				    </td>
+				</tr>
+				<tr>
+				    <th>References</th>
+				    <td>{{item.DOI}} / {{item.ISBN}}</td>
+				</tr>
+				<tr v-if="item.note">
+				    <th>Notes</th>
+				    <td>{{item.note}}</td>
+				</tr>
+				<tr v-if="item.keyword">
+				    <th>Keywords</th>
+				    <td>{{item.keyword}}</td>
+				</tr>
+			    </tbody>
+			    </template>
+			</v-simple-table>
+		    </span>
+		</v-container>
 	    </v-main></v-app>
 	</div>
     </body>
@@ -29,12 +68,26 @@
     <script>
 
      var bibdefs=[
-	 { 'file': 'wjh-bib.bib' },
-     ]
+	 { 'file': 'wjh-bib.json' },
+     ];
 
      var loaded_bib_sections={
-	 'sections': [],
-	 'foo': 'bar',
+	 'sections':
+	 []
+     };
+
+     var load_bibs = async function() {
+	 loaded_bib_sections = []
+	 for (i=0; i < bibdefs.length ; i++) {
+	     try {
+		 const response =
+		     await fetch(bibdefs[i].file);
+		 const data = await response.json();
+		 loaded_bib_sections.append(data)
+	     } catch (error) {
+		 console.log('failed to fetch ' + bibdefs[i].file);
+	     }
+	 }
      }
 
      Vue.component('bib-entry', {
@@ -48,8 +101,7 @@
 	 data: loaded_bib_sections,
 	 vuetify: new Vuetify(),
 	 created() {
-	     // XXX: load
-	     console.log("here");
+	     //load_bibs();
 	 },
 	 methods: {
 	 }
