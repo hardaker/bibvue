@@ -9,7 +9,7 @@
 	<div id="bibvue">
 	    <v-app><v-main>
 		<v-container>
-		    <span v-for="item in sections" :key="item.id">
+		    <span v-for="item in sections[current_section]" :key="item.id">
 			<h3>{{item.title}}</h3>
 			<v-simple-table dense>
 			    <template v-slot:default>
@@ -75,19 +75,21 @@
 	 { 'file': 'wjh-bib.json' },
      ];
 
-     var loaded_bib_sections={
+     var bib_data={
+	 'current_section': 'papers',
 	 'sections':
-	 []
+	 { ,
+	 }
      };
 
      var load_bibs = async function() {
-	 loaded_bib_sections = []
+	 bib_data = []
 	 for (i=0; i < bibdefs.length ; i++) {
 	     try {
 		 const response =
 		     await fetch(bibdefs[i].file);
 		 const data = await response.json();
-		 loaded_bib_sections.append(data)
+		 bib_data.append(data)
 	     } catch (error) {
 		 console.log('failed to fetch ' + bibdefs[i].file);
 	     }
@@ -102,7 +104,7 @@
      });
      var app = new Vue({
 	 el: '#bibvue',
-	 data: loaded_bib_sections,
+	 data: bib_data,
 	 vuetify: new Vuetify(),
 	 created() {
 	     //load_bibs();
