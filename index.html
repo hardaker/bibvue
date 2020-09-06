@@ -9,59 +9,72 @@
 	<div id="bibvue">
 	    <v-app><v-main>
 		<v-container>
-		    <span v-for="item in sections[current_section]" :key="item.id">
-			<h3>{{item.title}}</h3>
-			<v-simple-table dense>
-			    <template v-slot:default>
-			    <tbody>
-				<tr v-if="item.URL">
-				    <th>URL</th>
-				    <td><a :href="item.URL">{{item.URL}}</a></td>
-				</tr>
-				<tr v-if="item.issued['date-parts']">
-				    <th>Date</th>
-				    <td>{{item.issued['date-parts'].join("/")}}</td>
-				</tr>
-				<tr v-if="item['collection-title']">
-				    <th>Where</th>
-				    <td>{{item['collection-title']}}</td>
-				</tr>
-				<tr v-if="item['container-title']">
-				    <th>Where</th>
-				    <td>{{item['container-title']}}</td>
-				</tr>
-				<tr v-if="item.publisher">
-				    <th>Where</th>
-				    <td>{{item.publisher}}</td>
-				</tr>
-				<tr v-if="item.author">
-				    <th>Authors</th>
-				    <td>
-					<span v-for="author in item.author">
-					    {{author.given}} {{author.family}},
-					</span>
-				    </td>
-				</tr>
-				<tr>
-				    <th>References</th>
-				    <td>{{item.DOI}} / {{item.ISBN}}</td>
-				</tr>
-				<tr v-if="item.note">
-				    <th>Notes</th>
-				    <td>{{item.note}}</td>
-				</tr>
-				<tr v-if="item.keyword">
-				    <th>Keywords</th>
-				    <td>{{item.keyword}}</td>
-				</tr>
-			    </tbody>
-			    </template>
-			</v-simple-table>
-			<p v-if="item.abstract">
-			    <strong>Abstract: </strong>
-			    {{item.abstract}}
-			</p>
-		    </span>
+		    <v-tabs v-model="current_section">
+			<v-tab v-for="section in sections"
+			       :key="section.title">
+			    {{section.title}}
+			</v-tab>
+			
+			<v-tabs-items v-model="current_section">
+			    <v-tab-item v-for="section in sections"
+					       :key="section.title">
+				<span v-for="item in section.content" :key="item.id">
+				    <h3>{{item.title}}</h3>
+				    <v-simple-table dense>
+				 	<template v-slot:default>
+				 	    <tbody>
+				 		<tr v-if="item.URL">
+				 		    <th>URL</th>
+				 		    <td><a :href="item.URL">{{item.URL}}</a></td>
+				 		</tr>
+				 		<tr v-if="item.issued['date-parts']">
+				 		    <th>Date</th>
+				 		    <td>{{item.issued['date-parts'].join("/")}}</td>
+				 		</tr>
+				 		<tr v-if="item['collection-title']">
+				 		    <th>Where</th>
+				 		    <td>{{item['collection-title']}}</td>
+				 		</tr>
+				 		<tr v-if="item['container-title']">
+				 		    <th>Where</th>
+				 		    <td>{{item['container-title']}}</td>
+				 		</tr>
+				 		<tr v-if="item.publisher">
+				 		    <th>Where</th>
+				 		    <td>{{item.publisher}}</td>
+				 		</tr>
+				 		<tr v-if="item.author">
+				 		    <th>Authors</th>
+				 		    <td>
+				 			<span v-for="author in item.author">
+				 			    {{author.given}} {{author.family}},
+				 			</span>
+				 		    </td>
+				 		</tr>
+				 		<tr>
+				 		    <th>References</th>
+				 		    <td>{{item.DOI}} / {{item.ISBN}}</td>
+				 		</tr>
+				 		<tr v-if="item.note">
+				 		    <th>Notes</th>
+				 		    <td>{{item.note}}</td>
+				 		</tr>
+				 		<tr v-if="item.keyword">
+				 		    <th>Keywords</th>
+				 		    <td>{{item.keyword}}</td>
+				 		</tr>
+				 	    </tbody>
+				 	</template>
+				    </v-simple-table>
+				    <p v-if="item.abstract">
+				 	<strong>Abstract: </strong>
+				 	{{item.abstract}}
+				    </p>
+				</span>
+			    </v-tab-item>
+			</v-tabs-items>
+
+		    </v-tabs>
 		</v-container>
 	    </v-main></v-app>
 	</div>
@@ -72,28 +85,47 @@
     <script>
 
      var bibdefs=[
-	 { 'file': 'wjh-bib.json' },
+	 { 'file': 'wjh-bib.json',
+	   'title': 'papers'},
+	 { 'file': 'wjh-presentations.json',
+	   'title': 'presentations'},
+	 { 'file': 'wjh-rssac.json',
+	   'title': 'rssac'},
+	 { 'file': 'wjh-rfc.json',
+	   'title': 'rfcs'},
+	 { 'file': 'wjh-software.json',
+	   'title': 'software'},
      ];
 
      var bib_data={
 	 'current_section': 'papers',
-	 'sections':
-	 { ,
-	 }
+	 'sections': {}
      };
 
+     // this is hacky and shouldn't be needed
+     // somehow sections isn't getting watched properly otherwise by tabs
+     for(content in bibdefs) {
+	 console.log("content ")
+	 console.log(bibdefs[content])
+	 bib_data['sections'][bibdefs[content].title] = {}
+     }
+
      var load_bibs = async function() {
-	 bib_data = []
+	 console.log(bib_data);
 	 for (i=0; i < bibdefs.length ; i++) {
 	     try {
 		 const response =
 		     await fetch(bibdefs[i].file);
 		 const data = await response.json();
-		 bib_data.append(data)
+		 bib_data['sections'][bibdefs[i].title] =
+		     { 'title': bibdefs[i].title,
+		       'content': data}
+		 console.log("fetched "+ bibdefs[i].file)
 	     } catch (error) {
 		 console.log('failed to fetch ' + bibdefs[i].file);
 	     }
 	 }
+	 console.log(bib_data);
      }
 
      Vue.component('bib-entry', {
@@ -107,11 +139,11 @@
 	 data: bib_data,
 	 vuetify: new Vuetify(),
 	 created() {
-	     //load_bibs();
+	     load_bibs();
 	 },
 	 methods: {
 	 }
      });
-	     
+     
     </script>
 </html>
