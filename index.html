@@ -7,8 +7,20 @@
     </head>
     <body>
 	<div id="bibvue">
-	</div>
-    </body>
+	    <v-app><v-main>
+	    <v-container>
+		<v-row>
+		    <v-col>
+			<v-card>
+			    <p>hi</p>
+			</v-card>
+		    </v-col>
+		    <v-col>
+			<p>world {{foo}}</p>
+		    </v-col>
+		</v-row>
+	    </v-container>
+	    </v-main></v-app>
 	</div>
     </body>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
@@ -20,9 +32,10 @@
 	 { 'file': 'wjh-bib.bib' },
      ]
 
-     var loaded_bib_sections=[
-	 []
-     ]
+     var loaded_bib_sections={
+	 'sections': [],
+	 'foo': 'bar',
+     }
 
      Vue.component('bib-entry', {
 	 props: ['bibentry'],
@@ -35,11 +48,12 @@
 	 data: loaded_bib_sections,
 	 vuetify: new Vuetify(),
 	 created() {
-	     // XXX: load 
+	     // XXX: load
+	     console.log("here");
 	 },
 	 methods: {
 	 }
-     }
+     });
 	     
     </script>
 </html>
