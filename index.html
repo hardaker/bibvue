@@ -8,89 +8,98 @@
     </head>
     <body>
 	<script>
-	    var bibdefs=[
-		{ 'file': 'wjh-bib.json',
-		  'title': 'Peer-reviewed papers'},
-		{ 'file': 'wjh-presentations.json',
-		  'title': 'presentations'},
-		{ 'file': 'wjh-rssac.json',
-		  'title': 'rssac publications'},
-		{ 'file': 'wjh-rfc.json',
-		  'title': 'IETF rfcs'},
-		{ 'file': 'wjh-software.json',
-		  'title': 'software'},
-	    ];
+	 var bibdefs=[
+	     { 'file': 'wjh-bib.json',
+	       'title': 'Peer-reviewed papers'},
+	     { 'file': 'wjh-presentations.json',
+	       'title': 'presentations'},
+	     { 'file': 'wjh-rssac.json',
+	       'title': 'rssac publications'},
+	     { 'file': 'wjh-rfc.json',
+	       'title': 'IETF rfcs'},
+	     { 'file': 'wjh-software.json',
+	       'title': 'software'},
+	 ];
 	</script>
 	
 	<div id="bibvue">
 	    <v-app><v-main>
 		<v-container>
-		    <v-tabs v-model="current_section">
-			<v-tab v-for="section in sections"
-			       :key="section.title">
-			    {{section.title}}
-			</v-tab>
-			
-			<v-tabs-items v-model="current_section">
-			    <v-tab-item v-for="section in sections"
-					       :key="section.title">
-				<span v-for="item in section.content" :key="item.id">
-				    <h3 v-html="item.title"></h3>
-				    <v-simple-table dense>
-				 	<template v-slot:default>
-				 	    <tbody>
-				 		<tr v-if="item.URL">
-				 		    <th>URL</th>
-				 		    <td><a :href="item.URL">{{item.URL}}</a></td>
-				 		</tr>
-				 		<tr v-if="item.issued['date-parts']">
-				 		    <th>Date</th>
-				 		    <td>{{item.issued['date-parts'].join("/")}}</td>
-				 		</tr>
-				 		<tr v-if="item['collection-title']">
-				 		    <th>Where</th>
-				 		    <td>{{item['collection-title']}}</td>
-				 		</tr>
-				 		<tr v-if="item['container-title']">
-				 		    <th>Where</th>
-				 		    <td>{{item['container-title']}}</td>
-				 		</tr>
-				 		<tr v-if="item.publisher">
-				 		    <th>Where</th>
-				 		    <td>{{item.publisher}}</td>
-				 		</tr>
-				 		<tr v-if="item.author">
-				 		    <th>Authors</th>
-				 		    <td>
-				 			<span v-for="author in item.author">
-				 			    {{author.given}} {{author.family}},
-				 			</span>
-				 		    </td>
-				 		</tr>
-				 		<tr v-if="item.DOI || item.ISBN">
-				 		    <th>References</th>
-				 		    <td>{{item.DOI}} / {{item.ISBN}}</td>
-				 		</tr>
-				 		<tr v-if="item.note">
-				 		    <th>Notes</th>
-				 		    <td>{{item.note}}</td>
-				 		</tr>
-				 		<tr v-if="item.keyword">
-				 		    <th>Keywords</th>
-				 		    <td>{{item.keyword}}</td>
-				 		</tr>
-				 	    </tbody>
-				 	</template>
-				    </v-simple-table>
-				    <p v-if="item.abstract" class="pl-6">
-				 	<strong>Abstract: </strong>
-				 	{{item.abstract}}
-				    </p>
-				</span>
-			    </v-tab-item>
-			</v-tabs-items>
+		    <v-card>
+			<v-card-title>
+			    Publications
+			</v-card-title>
+			<v-card-text>
+			    <v-tabs v-model="current_section" class="pb-5">
 
-		    </v-tabs>
+				<v-tab v-for="section in sections"
+				       :key="section.title"
+				       class="mt-5">
+				    {{section.title}}
+				</v-tab>
+				
+				<v-tabs-items v-model="current_section">
+				    <v-tab-item v-for="section in sections"
+						:key="section.title">
+					<span v-for="item in section.content" :key="item.id">
+					    <h3 v-html="item.title"></h3>
+					    <v-simple-table dense>
+				 		<template v-slot:default>
+				 		    <tbody>
+				 			<tr v-if="item.URL">
+				 			    <th>URL</th>
+				 			    <td><a :href="item.URL">{{item.URL}}</a></td>
+				 			</tr>
+				 			<tr v-if="item.issued['date-parts']">
+				 			    <th>Date</th>
+				 			    <td>{{item.issued['date-parts'].join("/")}}</td>
+				 			</tr>
+				 			<tr v-if="item['collection-title']">
+				 			    <th>Where</th>
+				 			    <td>{{item['collection-title']}}</td>
+				 			</tr>
+				 			<tr v-if="item['container-title']">
+				 			    <th>Where</th>
+				 			    <td>{{item['container-title']}}</td>
+				 			</tr>
+				 			<tr v-if="item.publisher">
+				 			    <th>Where</th>
+				 			    <td>{{item.publisher}}</td>
+				 			</tr>
+				 			<tr v-if="item.author">
+				 			    <th>Authors</th>
+				 			    <td>
+				 				<span v-for="author in item.author">
+				 				    {{author.given}} {{author.family}},
+				 				</span>
+				 			    </td>
+				 			</tr>
+				 			<tr v-if="item.DOI || item.ISBN">
+				 			    <th>References</th>
+				 			    <td>{{item.DOI}} / {{item.ISBN}}</td>
+				 			</tr>
+				 			<tr v-if="item.note">
+				 			    <th>Notes</th>
+				 			    <td>{{item.note}}</td>
+				 			</tr>
+				 			<tr v-if="item.keyword">
+				 			    <th>Keywords</th>
+				 			    <td>{{item.keyword}}</td>
+				 			</tr>
+				 		    </tbody>
+				 		</template>
+					    </v-simple-table>
+					    <p v-if="item.abstract" class="pl-6">
+				 		<strong>Abstract: </strong>
+				 		{{item.abstract}}
+					    </p>
+					</span>
+				    </v-tab-item>
+				</v-tabs-items>
+
+			    </v-tabs>
+			</v-card-text>
+		    </v-card>
 		</v-container>
 	    </v-main></v-app>
 	</div>
