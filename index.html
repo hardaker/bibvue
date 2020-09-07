@@ -7,6 +7,21 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
     </head>
     <body>
+	<script>
+	    var bibdefs=[
+		{ 'file': 'wjh-bib.json',
+		  'title': 'papers'},
+		{ 'file': 'wjh-presentations.json',
+		  'title': 'presentations'},
+		{ 'file': 'wjh-rssac.json',
+		  'title': 'rssac publications'},
+		{ 'file': 'wjh-rfc.json',
+		  'title': 'IETF rfcs'},
+		{ 'file': 'wjh-software.json',
+		  'title': 'software'},
+	    ];
+	</script>
+	
 	<div id="bibvue">
 	    <v-app><v-main>
 		<v-container>
@@ -84,20 +99,6 @@
     <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
     <!--  <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
     <script>
-
-     var bibdefs=[
-	 { 'file': 'wjh-bib.json',
-	   'title': 'papers'},
-	 { 'file': 'wjh-presentations.json',
-	   'title': 'presentations'},
-	 { 'file': 'wjh-rssac.json',
-	   'title': 'rssac publications'},
-	 { 'file': 'wjh-rfc.json',
-	   'title': 'IETF rfcs'},
-	 { 'file': 'wjh-software.json',
-	   'title': 'software'},
-     ];
-
      var bib_data={
 	 'current_section': 0,
 	 'sections': {}
