@@ -19,7 +19,7 @@
 			    <v-tab-item v-for="section in sections"
 					       :key="section.title">
 				<span v-for="item in section.content" :key="item.id">
-				    <h3>{{item.title}}</h3>
+				    <h3 v-html="item.title"></h3>
 				    <v-simple-table dense>
 				 	<template v-slot:default>
 				 	    <tbody>
@@ -105,8 +105,6 @@
      // this is hacky and shouldn't be needed
      // somehow sections isn't getting watched properly otherwise by tabs
      for(content in bibdefs) {
-	 console.log("content ")
-	 console.log(bibdefs[content])
 	 bib_data['sections'][bibdefs[content].title] = {}
      }
 
@@ -125,7 +123,6 @@
 		 console.log('failed to fetch ' + bibdefs[i].file);
 	     }
 	 }
-	 console.log(bib_data);
      }
 
      Vue.component('bib-entry', {
