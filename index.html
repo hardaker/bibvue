@@ -30,11 +30,10 @@
 			    Publications
 			</v-card-title>
 			<v-card-text>
-			    <v-tabs v-model="current_section" class="pb-5">
+			    <v-tabs v-model="current_section">
 
 				<v-tab v-for="section in sections"
-				       :key="section.title"
-				       class="mt-5">
+				       :key="section.title">
 				    {{section.title}}
 				</v-tab>
 				
