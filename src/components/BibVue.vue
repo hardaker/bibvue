@@ -29,10 +29,16 @@
          'keywords': false,
          'abstract': true,
      },
+     'bibsdir': "bibs",
 
      // don't need to touch these
      'current_section': 0,
      expanded: false,
+ }
+
+ var transform_id = function(name) {
+     name.replaceAll(/[^a-zA-Z0-9]/g, "_");
+     return vuedata['bibsdir'] + "/" + name + ".bib";
  }
 
  export default {
@@ -51,7 +57,8 @@
      methods: {
          'showdetails': function() {
              console.log("expand")
-         }
+         },
+         'transform_id': transform_id,
      }
  }
 
@@ -61,12 +68,26 @@
              const response =
                  await fetch(vuedata.bib_files[i].file);
              const data = await response.json();
+
+             for(var j=0; j < data.length; j++) {
+                 if (data[j]['id']) {
+                     data[j]['transformed_id'] = transform_id(data[j]['id']);
+                     console.log("converted " + data[j]['id'] + " to " + data[j]['transformed_id']);
+                 } else {
+                     data[j]['transformed_id'] = undefined;
+                     console.log("no id for: ");
+                     console.log(data[j]);
+                 }
+             }
+
              vuedata['sections'][vuedata.bib_files[i].title] =
                  { 'title': vuedata.bib_files[i].title,
                    'content': data}
              console.log("fetched "+ vuedata.bib_files[i].file)
+
          } catch (error) {
              console.log('failed to fetch ' + vuedata.bib_files[i].file);
+             console.log(error);
          }
      }
  }
@@ -96,10 +117,16 @@
                         <v-tab-item v-for="section in sections"
                                     :key="section.title">
                             <span v-for="item in section.content" :key="item.id">
-                                <h3 v-html="item.title"></h3>
+                                <h3>{{item.title}}
+                                    <a class="float-right" :href="item.transformed_id">[cite]</a>
+                                </h3>
                                 <v-simple-table dense>
                                     <template v-slot:default>
                                         <tbody>
+                                            <tr>
+                                                <th width="20%">cite</th>
+                                                <td><a :href="item.transformed_id">[cite]</a></td>
+                                            </tr>
                                             <tr v-if="item.URL">
                                                 <th width="20%">URL</th>
                                                 <td><a :href="item.URL">{{item.URL}}</a></td>
