@@ -37,7 +37,7 @@
  }
 
  var transform_id = function(name) {
-     name.replaceAll(/[^a-zA-Z0-9]/g, "_");
+     name = name.replaceAll(/[^a-zA-Z0-9]/g, "_");
      return vuedata['bibsdir'] + "/" + name + ".bib";
  }
 
